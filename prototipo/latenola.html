@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LateNola — Mi Álbum Mundial 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800;9..144,900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f4ede0;
+    --paper-dark: #e8dcc4;
+    --ink: #1a1a1a;
+    --ink-soft: #4a4a4a;
+    --accent: #d62828;
+    --gold: #c9a227;
+    --celeste: #75aadb;
+    --have: #2d6a4f;
+    --dupe: #e07a00;
+    --missing: #b8b0a0;
+    --shadow: rgba(0,0,0,0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Fraunces', Georgia, serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(214,40,40,0.04) 0, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(117,170,219,0.05) 0, transparent 40%);
+    pointer-events: none; z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    opacity: 0.06; pointer-events: none; z-index: 1; mix-blend-mode: multiply;
+  }
+
+  header {
+    position: relative; z-index: 2;
+    border-bottom: 2px solid var(--ink);
+    background: var(--paper);
+    padding: 14px 20px 10px;
+    display: flex; align-items: baseline; gap: 16px;
+  }
+  .brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 38px; letter-spacing: 0.04em; line-height: 1;
+  }
+  .brand .tilt {
+    display: inline-block; transform: rotate(-3deg);
+    color: var(--accent);
+    font-size: 18px; letter-spacing: 0.06em;
+    margin-left: 6px; vertical-align: middle;
+  }
+  .tagline {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.15em;
+    margin-left: auto;
+  }
+
+  /* Stats strip */
+  .stats {
+    position: relative; z-index: 2;
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    border-bottom: 1px solid var(--ink);
+    background: var(--paper-dark);
+  }
+  .stat {
+    padding: 10px 14px;
+    border-right: 1px dashed rgba(0,0,0,0.2);
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .stat:last-child { border-right: none; }
+  .stat-label {
+    font-family: 'DM Mono', monospace; font-size: 9px;
+    color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.12em;
+  }
+  .stat-value {
+    font-family: 'Bebas Neue', sans-serif; font-size: 26px; line-height: 1;
+  }
+  .stat-value .pct { font-size: 13px; color: var(--ink-soft); margin-left: 4px; }
+
+  /* Quick load bar — the speedrun input */
+  .quickload {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 12px 20px;
+    display: flex; align-items: center; gap: 12px;
+    box-shadow: 0 4px 12px var(--shadow);
+  }
+  .quickload-icon {
+    font-family: 'Bebas Neue', sans-serif; font-size: 22px;
+    color: var(--gold); letter-spacing: 0.04em;
+  }
+  .ql-input {
+    flex: 1; background: transparent; border: none; outline: none;
+    color: var(--paper); font-family: 'DM Mono', monospace;
+    font-size: 18px; padding: 4px 8px;
+    border-bottom: 2px solid var(--gold);
+    text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  .ql-input::placeholder { color: rgba(244,237,224,0.4); text-transform: uppercase; }
+  .ql-hint {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    color: rgba(244,237,224,0.5); white-space: nowrap;
+  }
+  .ql-suggestions {
+    position: absolute; top: 100%; left: 20px; right: 20px;
+    background: var(--paper); color: var(--ink);
+    border: 2px solid var(--ink); border-top: none;
+    max-height: 260px; overflow-y: auto;
+    box-shadow: 0 8px 16px var(--shadow);
+  }
+  .ql-suggestion {
+    padding: 8px 14px; cursor: pointer;
+    display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px dashed rgba(0,0,0,0.1);
+    font-family: 'DM Mono', monospace; font-size: 13px;
+  }
+  .ql-suggestion:hover, .ql-suggestion.active { background: var(--gold); }
+  .ql-suggestion .num { font-weight: 500; color: var(--accent); min-width: 50px; }
+  .ql-suggestion .name { flex: 1; font-family: 'Fraunces', serif; }
+  .ql-suggestion .state { font-size: 10px; opacity: 0.6; text-transform: uppercase; }
+
+  /* Last-loaded toast */
+  .toast {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--ink); color: var(--paper);
+    padding: 12px 18px; border-radius: 4px;
+    font-family: 'DM Mono', monospace; font-size: 13px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); pointer-events: auto; }
+  .toast .t-num { color: var(--gold); font-weight: 500; margin-right: 8px; }
+  .toast .t-action { color: var(--accent); margin-right: 8px; }
+  .toast .undo {
+    margin-left: 12px; padding: 4px 10px;
+    background: var(--accent); color: var(--paper);
+    border: none; cursor: pointer; font-family: inherit; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+
+  /* View tabs */
+  .tabs {
+    position: relative; z-index: 2;
+    display: flex; border-bottom: 2px solid var(--ink);
+    background: var(--paper); padding: 0 20px;
+  }
+  .tab {
+    padding: 12px 18px; cursor: pointer;
+    font-family: 'Bebas Neue', sans-serif; font-size: 16px;
+    letter-spacing: 0.06em; color: var(--ink-soft);
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px; transition: all 0.15s;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab.active { color: var(--ink); border-bottom-color: var(--accent); }
+  .tab .count {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    margin-left: 6px; color: var(--ink-soft);
+  }
+
+  /* Main content */
+  main {
+    position: relative; z-index: 2;
+    padding: 20px;
+    max-width: 1400px; margin: 0 auto;
+  }
+
+  /* Selecciones grid */
+  .selecciones {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 18px;
+  }
+  .seleccion {
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    box-shadow: 4px 4px 0 var(--ink);
+    transition: transform 0.1s;
+  }
+  .seleccion:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--ink); }
+  .seleccion-head {
+    padding: 10px 14px;
+    display: flex; align-items: center; gap: 10px;
+    border-bottom: 1px dashed var(--ink);
+    background: var(--paper-dark);
+  }
+  .flag {
+    font-size: 20px; line-height: 1;
+  }
+  .seleccion-name {
+    font-family: 'Bebas Neue', sans-serif; font-size: 18px;
+    letter-spacing: 0.04em; flex: 1;
+  }
+  .seleccion-code {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    color: var(--ink-soft); padding: 2px 6px;
+    background: var(--paper); border: 1px solid var(--ink-soft);
+  }
+  .seleccion-progress {
+    height: 4px; background: var(--paper-dark);
+    border-bottom: 1px dashed rgba(0,0,0,0.2);
+  }
+  .seleccion-bar {
+    height: 100%; background: var(--have);
+    transition: width 0.3s;
+  }
+  .figus-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 2px; background: var(--ink-soft); padding: 2px;
+  }
+  .figu {
+    aspect-ratio: 3 / 4; background: var(--missing);
+    position: relative; cursor: pointer;
+    display: flex; flex-direction: column;
+    justify-content: space-between; padding: 4px 4px 6px;
+    transition: background 0.1s;
+    user-select: none;
+    overflow: hidden;
+    min-width: 0;
+  }
+  .figu:hover { filter: brightness(1.08); }
+  .figu.have { background: var(--have); color: white; }
+  .figu.dupe { background: var(--dupe); color: white; }
+  .figu .figu-num {
+    font-family: 'DM Mono', monospace; font-size: 9px;
+    font-weight: 500; opacity: 0.85;
+    white-space: nowrap;
+  }
+  .figu .figu-name {
+    font-family: 'Fraunces', serif; font-size: 9px;
+    line-height: 1.15; font-weight: 600;
+    overflow: hidden; text-overflow: ellipsis;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    word-break: break-word;
+  }
+  .figu.special::before {
+    content: '★'; position: absolute; top: 2px; right: 3px;
+    color: var(--gold); font-size: 10px;
+  }
+  .figu .dupe-count {
+    position: absolute; bottom: 2px; right: 3px;
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    font-weight: 500; background: rgba(0,0,0,0.3);
+    padding: 0 4px; border-radius: 2px;
+  }
+
+  /* Filter chips */
+  .filters {
+    display: flex; gap: 8px; margin-bottom: 16px;
+    flex-wrap: wrap; align-items: center;
+  }
+  @media (max-width: 768px) {
+    /* En mobile + vista album, los filtros no se muestran porque la ruedita reemplaza la navegación */
+    .filters.hide-on-mobile-album { display: none; }
+  }
+  .filter-label {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--ink-soft);
+  }
+  .chip {
+    padding: 4px 10px; cursor: pointer;
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    background: var(--paper); border: 1px solid var(--ink);
+    transition: all 0.15s;
+  }
+  .chip:hover { background: var(--paper-dark); }
+  .chip.active { background: var(--ink); color: var(--paper); }
+  .chip .dot {
+    display: inline-block; width: 8px; height: 8px;
+    border-radius: 50%; margin-right: 4px; vertical-align: middle;
+  }
+
+  /* List view */
+  .list-view {
+    background: var(--paper); border: 1.5px solid var(--ink);
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  .list-row {
+    display: grid; grid-template-columns: 70px 1fr 100px 120px;
+    padding: 8px 14px; gap: 12px; align-items: center;
+    border-bottom: 1px dashed rgba(0,0,0,0.1);
+    font-family: 'DM Mono', monospace; font-size: 13px;
+  }
+  .list-row:last-child { border-bottom: none; }
+  .list-row.header {
+    background: var(--ink); color: var(--paper);
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.12em;
+  }
+  .list-row .num { color: var(--accent); font-weight: 500; }
+  .list-row .name { font-family: 'Fraunces', serif; font-size: 14px; }
+  .list-controls { display: flex; gap: 4px; align-items: center; }
+  .ctrl-btn {
+    width: 26px; height: 26px; border: 1px solid var(--ink);
+    background: var(--paper); cursor: pointer;
+    font-family: 'Bebas Neue', sans-serif; font-size: 16px;
+  }
+  .ctrl-btn:hover { background: var(--paper-dark); }
+  .ctrl-count {
+    min-width: 30px; text-align: center;
+    font-weight: 500; font-size: 14px;
+  }
+
+  /* Help footer */
+  .keyboard-help {
+    position: relative; z-index: 2;
+    padding: 16px 20px; margin-top: 24px;
+    border-top: 1px dashed var(--ink);
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--ink-soft); display: flex; gap: 20px; flex-wrap: wrap;
+  }
+  .keyboard-help kbd {
+    background: var(--ink); color: var(--paper);
+    padding: 2px 6px; border-radius: 2px; font-size: 10px;
+  }
+
+  @media (max-width: 600px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .stat:nth-child(2) { border-right: none; }
+    .selecciones { grid-template-columns: 1fr; }
+    .figus-grid { grid-template-columns: repeat(5, 1fr); }
+    .list-row { grid-template-columns: 50px 1fr 100px; }
+    .list-row .seleccion-col { display: none; }
+    .brand { font-size: 28px; }
+  }
+
+  /* ============================================================
+     MODO ÁLBUM MOBILE — swipe horizontal + ruedita
+     Solo activo en <= 768px y solo en la vista "album"
+     ============================================================ */
+  .mobile-album { display: none; }
+  /* .desktop-album NO setea display propio: deja que .selecciones use su grid */
+
+  @media (max-width: 768px) {
+    .mobile-album.active { display: flex; flex-direction: column; }
+    .desktop-album.hidden-mobile { display: none; }
+  }
+
+  .mobile-album {
+    position: relative;
+    margin: -20px -20px 0; /* compensa el padding de main */
+    background: var(--paper);
+  }
+
+  /* barra superior: progreso de la selección actual */
+  .ma-progress-bar {
+    padding: 10px 16px 8px;
+    border-bottom: 1px dashed var(--ink);
+    background: var(--paper-dark);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .ma-flag { font-size: 22px; line-height: 1; }
+  .ma-meta {
+    flex: 1; display: flex; flex-direction: column; gap: 3px;
+    min-width: 0;
+  }
+  .ma-meta-line1 {
+    display: flex; align-items: baseline; gap: 8px;
+    overflow: hidden;
+  }
+  .ma-name {
+    font-family: 'Bebas Neue', sans-serif; font-size: 18px;
+    letter-spacing: 0.04em; line-height: 1;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .ma-code {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    color: var(--ink-soft);
+    padding: 2px 6px; border: 1px solid var(--ink-soft);
+    flex-shrink: 0;
+  }
+  .ma-bar-track {
+    height: 4px; background: var(--paper);
+    border: 1px solid var(--ink-soft);
+    position: relative; overflow: hidden;
+  }
+  .ma-bar-fill {
+    position: absolute; inset: 0 auto 0 0;
+    background: var(--have);
+    transition: width 0.25s;
+  }
+  .ma-counter {
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    color: var(--ink-soft); flex-shrink: 0;
+  }
+
+  /* páginas con swipe */
+  .ma-pages {
+    display: flex; flex-direction: row;
+    overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .ma-pages::-webkit-scrollbar { display: none; }
+
+  .ma-page {
+    flex: 0 0 100%;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+    padding: 14px 16px 80px; /* bottom padding generoso para que no se choque con la ruedita */
+    min-height: 50vh;
+  }
+
+  /* grilla dentro de la página: más grande porque tenemos el ancho completo */
+  .ma-figus {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+  .ma-figu {
+    aspect-ratio: 3 / 4;
+    background: var(--missing);
+    position: relative;
+    border: 1.5px solid var(--ink);
+    box-shadow: 2px 2px 0 var(--ink);
+    display: flex; flex-direction: column;
+    justify-content: space-between;
+    padding: 5px 5px 7px;
+    cursor: pointer;
+    user-select: none;
+    overflow: hidden;
+    min-width: 0;
+    transition: transform 0.08s, background 0.1s;
+  }
+  .ma-figu:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 var(--ink);
+  }
+  .ma-figu.have { background: var(--have); color: white; }
+  .ma-figu.dupe { background: var(--dupe); color: white; }
+  .ma-figu .ma-figu-num {
+    font-family: 'DM Mono', monospace; font-size: 10px;
+    font-weight: 500; opacity: 0.85; white-space: nowrap;
+  }
+  .ma-figu .ma-figu-name {
+    font-family: 'Fraunces', serif; font-size: 11px;
+    line-height: 1.15; font-weight: 600;
+    overflow: hidden;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+    word-break: break-word;
+  }
+  .ma-figu.special::before {
+    content: '★'; position: absolute; top: 3px; right: 5px;
+    color: var(--gold); font-size: 12px;
+  }
+  .ma-figu .ma-dupe-count {
+    position: absolute; bottom: 3px; right: 4px;
+    font-family: 'DM Mono', monospace; font-size: 12px;
+    font-weight: 500; background: rgba(0,0,0,0.35);
+    padding: 1px 5px; border-radius: 2px;
+  }
+
+  /* Ruedita inferior */
+  .ma-wheel-wrap {
+    position: sticky; bottom: 0;
+    background: var(--paper);
+    border-top: 2px solid var(--ink);
+    padding: 10px 0 14px;
+    box-shadow: 0 -4px 12px var(--shadow);
+  }
+  .ma-wheel-indicator {
+    /* línea central que marca la selección activa */
+    position: absolute; left: 50%; top: 6px; bottom: 6px;
+    width: 2px; transform: translateX(-50%);
+    background: var(--accent);
+    pointer-events: none; z-index: 2;
+  }
+  .ma-wheel-indicator::before, .ma-wheel-indicator::after {
+    content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 5px solid transparent; border-right: 5px solid transparent;
+  }
+  .ma-wheel-indicator::before {
+    top: -1px; border-top: 6px solid var(--accent);
+  }
+  .ma-wheel-indicator::after {
+    bottom: -1px; border-bottom: 6px solid var(--accent);
+  }
+  .ma-wheel {
+    display: flex; flex-direction: row;
+    overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    /* padding lateral = 50% de viewport para que el primero/último puedan centrarse */
+    padding: 0 50vw;
+  }
+  .ma-wheel::-webkit-scrollbar { display: none; }
+
+  .ma-wheel-item {
+    flex: 0 0 72px;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 4px 0;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+    opacity: 0.45;
+    transform: scale(0.85);
+  }
+  .ma-wheel-item.active {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  .ma-wheel-item.near {
+    opacity: 0.75;
+  }
+  .ma-wheel-code {
+    font-family: 'Bebas Neue', sans-serif; font-size: 16px;
+    letter-spacing: 0.04em; line-height: 1;
+    color: var(--ink);
+  }
+  .ma-wheel-page {
+    font-family: 'DM Mono', monospace; font-size: 9px;
+    color: var(--ink-soft); margin-top: 2px;
+    letter-spacing: 0.05em;
+  }
+  .ma-wheel-item.active .ma-wheel-code { color: var(--accent); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">LateNola <span class="tilt">Mundial 2026</span></div>
+  <div class="tagline">prototipo · v0.1 · mi álbum panini</div>
+</header>
+
+<div class="stats">
+  <div class="stat">
+    <div class="stat-label">Pegadas</div>
+    <div class="stat-value" id="stat-have">0<span class="pct" id="stat-pct">0%</span></div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Repetidas</div>
+    <div class="stat-value" id="stat-dupes">0</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Faltan</div>
+    <div class="stat-value" id="stat-missing">980</div>
+  </div>
+  <div class="stat">
+    <div class="stat-label">Total álbum</div>
+    <div class="stat-value">980</div>
+  </div>
+</div>
+
+<div class="quickload">
+  <div class="quickload-icon">»</div>
+  <input
+    type="text"
+    class="ql-input"
+    id="ql-input"
+    placeholder="Tipeá: ARG 13, BRA 5, FWC 1..."
+    autocomplete="off"
+    spellcheck="false"
+  >
+  <div class="ql-hint">Enter = sumar · Shift+Enter = restar · ↑↓ navegar</div>
+  <div class="ql-suggestions" id="ql-suggestions" style="display:none"></div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-view="album">Álbum</div>
+  <div class="tab" data-view="repes">Mis Repes <span class="count" id="tab-repes-count">0</span></div>
+  <div class="tab" data-view="faltan">Lo que me falta <span class="count" id="tab-faltan-count">980</span></div>
+</div>
+
+<main>
+  <div class="filters" id="filters"></div>
+  <div id="content-area"></div>
+</main>
+
+<div class="keyboard-help">
+  <span><kbd>/</kbd> foco al input</span>
+  <span><kbd>Enter</kbd> +1</span>
+  <span><kbd>Shift+Enter</kbd> -1</span>
+  <span><kbd>Esc</kbd> limpiar</span>
+  <span style="margin-left:auto">datos guardados localmente</span>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// CATÁLOGO DEL ÁLBUM PANINI MUNDIAL 2026
+// ============================================================
+// Estructura confirmada por fuentes:
+// - 112 páginas, 980 figuritas
+// - 48 selecciones × 20 figus c/u (escudo + foto grupal + 18 jugadores) = 960
+// - ~20 figuritas de secciones especiales (estadios, mascotas, trofeo, etc) = 20
+// - Los ~80 Extra Stickers (legends/oro) NO van acá, son aparte y no parte del álbum base
+//
+// Las selecciones que ya están confirmadas (anfitriones + clasificadas) las cargo
+// con código real. El resto se completarán cuando termine la clasificación.
+//
+// Ojo: esto es un PROTOTIPO. Los nombres de jugadores son aproximados/conocidos
+// pero el orden exacto y los números de figurita los corrige Robe contra el álbum
+// físico cuando lo tenga delante.
+// ============================================================
+
+const SELECCIONES = [
+  // Anfitriones (clasificados automáticamente)
+  { code: 'USA', name: 'Estados Unidos', flag: '🇺🇸', group: 'Anfitrión' },
+  { code: 'MEX', name: 'México',         flag: '🇲🇽', group: 'Anfitrión' },
+  { code: 'CAN', name: 'Canadá',         flag: '🇨🇦', group: 'Anfitrión' },
+
+  // CONMEBOL clasificados
+  { code: 'ARG', name: 'Argentina',      flag: '🇦🇷', group: 'CONMEBOL' },
+  { code: 'BRA', name: 'Brasil',         flag: '🇧🇷', group: 'CONMEBOL' },
+  { code: 'URU', name: 'Uruguay',        flag: '🇺🇾', group: 'CONMEBOL' },
+  { code: 'COL', name: 'Colombia',       flag: '🇨🇴', group: 'CONMEBOL' },
+  { code: 'ECU', name: 'Ecuador',        flag: '🇪🇨', group: 'CONMEBOL' },
+  { code: 'PAR', name: 'Paraguay',       flag: '🇵🇾', group: 'CONMEBOL' },
+
+  // UEFA confirmados (placeholder amplio, faltarán algunos)
+  { code: 'ESP', name: 'España',         flag: '🇪🇸', group: 'UEFA' },
+  { code: 'FRA', name: 'Francia',        flag: '🇫🇷', group: 'UEFA' },
+  { code: 'ENG', name: 'Inglaterra',     flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', group: 'UEFA' },
+  { code: 'GER', name: 'Alemania',       flag: '🇩🇪', group: 'UEFA' },
+  { code: 'POR', name: 'Portugal',       flag: '🇵🇹', group: 'UEFA' },
+  { code: 'NED', name: 'Países Bajos',   flag: '🇳🇱', group: 'UEFA' },
+  { code: 'BEL', name: 'Bélgica',        flag: '🇧🇪', group: 'UEFA' },
+  { code: 'CRO', name: 'Croacia',        flag: '🇭🇷', group: 'UEFA' },
+  { code: 'ITA', name: 'Italia',         flag: '🇮🇹', group: 'UEFA' },
+  { code: 'SUI', name: 'Suiza',          flag: '🇨🇭', group: 'UEFA' },
+  { code: 'DEN', name: 'Dinamarca',      flag: '🇩🇰', group: 'UEFA' },
+  { code: 'AUT', name: 'Austria',        flag: '🇦🇹', group: 'UEFA' },
+  { code: 'POL', name: 'Polonia',        flag: '🇵🇱', group: 'UEFA' },
+  { code: 'NOR', name: 'Noruega',        flag: '🇳🇴', group: 'UEFA' },
+  { code: 'SRB', name: 'Serbia',         flag: '🇷🇸', group: 'UEFA' },
+  { code: 'TUR', name: 'Turquía',        flag: '🇹🇷', group: 'UEFA' },
+  { code: 'UKR', name: 'Ucrania',        flag: '🇺🇦', group: 'UEFA' },
+
+  // CONCACAF (no anfitriones)
+  { code: 'CRC', name: 'Costa Rica',     flag: '🇨🇷', group: 'CONCACAF' },
+  { code: 'PAN', name: 'Panamá',         flag: '🇵🇦', group: 'CONCACAF' },
+  { code: 'JAM', name: 'Jamaica',        flag: '🇯🇲', group: 'CONCACAF' },
+
+  // CAF
+  { code: 'MAR', name: 'Marruecos',      flag: '🇲🇦', group: 'CAF' },
+  { code: 'EGY', name: 'Egipto',         flag: '🇪🇬', group: 'CAF' },
+  { code: 'SEN', name: 'Senegal',        flag: '🇸🇳', group: 'CAF' },
+  { code: 'NGA', name: 'Nigeria',        flag: '🇳🇬', group: 'CAF' },
+  { code: 'ALG', name: 'Argelia',        flag: '🇩🇿', group: 'CAF' },
+  { code: 'CIV', name: 'Costa de Marfil',flag: '🇨🇮', group: 'CAF' },
+  { code: 'GHA', name: 'Ghana',          flag: '🇬🇭', group: 'CAF' },
+  { code: 'CMR', name: 'Camerún',        flag: '🇨🇲', group: 'CAF' },
+  { code: 'TUN', name: 'Túnez',          flag: '🇹🇳', group: 'CAF' },
+
+  // AFC
+  { code: 'JPN', name: 'Japón',          flag: '🇯🇵', group: 'AFC' },
+  { code: 'KOR', name: 'Corea del Sur',  flag: '🇰🇷', group: 'AFC' },
+  { code: 'AUS', name: 'Australia',      flag: '🇦🇺', group: 'AFC' },
+  { code: 'IRN', name: 'Irán',           flag: '🇮🇷', group: 'AFC' },
+  { code: 'KSA', name: 'Arabia Saudita', flag: '🇸🇦', group: 'AFC' },
+  { code: 'QAT', name: 'Qatar',          flag: '🇶🇦', group: 'AFC' },
+  { code: 'UZB', name: 'Uzbekistán',     flag: '🇺🇿', group: 'AFC' },
+  { code: 'JOR', name: 'Jordania',       flag: '🇯🇴', group: 'AFC' },
+  { code: 'IRQ', name: 'Irak',           flag: '🇮🇶', group: 'AFC' },
+
+  // OFC
+  { code: 'NZL', name: 'Nueva Zelanda',  flag: '🇳🇿', group: 'OFC' },
+
+  // Repechaje TBD (placeholder)
+  { code: 'PLO', name: 'Repechaje 1',    flag: '🏳️', group: 'Repechaje' },
+  { code: 'PLT', name: 'Repechaje 2',    flag: '🏳️', group: 'Repechaje' }
+];
+
+// Para cada selección: 1 escudo + 1 foto grupal + 18 jugadores (con nombres aproximados de los más conocidos)
+// Para selecciones donde no tengo nombres confiables, uso placeholders "Jugador N"
+const PLAYERS_BY_CODE = {
+  ARG: ['E. Martínez','N. Molina','C. Romero','N. Otamendi','N. Tagliafico','L. Balerdi','R. De Paul','L. Paredes','E. Fernández','A. Mac Allister','N. Paz','F. Mastantuono','L. Messi','J. Álvarez','L. Martínez','Á. Di María','N. González','G. Lo Celso'],
+  BRA: ['Alisson','Marquinhos','É. Militão','D. Ribeiro','D. Carlos','V. Júnior','Rodrygo','Raphinha','Endrick','Casemiro','Bruno Guimarães','Lucas Paquetá','Neymar Jr.','Richarlison','G. Jesus','Antony','Martinelli','Danilo'],
+  ESP: ['Unai Simón','D. Carvajal','P. Cubarsí','R. Le Normand','Marc Cucurella','Rodri','Pedri','F. de Jong','Lamine Yamal','Nico Williams','Á. Morata','D. Olmo','Mikel Merino','F. Torres','F. Ruiz','Gavi','J. Oyarzabal','M. Zubimendi'],
+  FRA: ['M. Maignan','J. Koundé','W. Saliba','D. Upamecano','T. Hernández','A. Tchouaméni','E. Camavinga','A. Rabiot','K. Mbappé','O. Dembélé','M. Thuram','A. Griezmann','B. Barcola','R. Kolo Muani','J. Doué','M. Olise','I. Konaté','M. Cherki']
+  // Resto se autocompletan con placeholders "Jugador 1..18"
+};
+
+// Build full sticker catalog
+function buildCatalog() {
+  const stickers = [];
+  let globalNum = 1;
+
+  // Sección "Mundial" (placeholder de 20 figus especiales: trofeo, mascotas, estadios, logo)
+  const SPECIAL_NAMES = [
+    'Trofeo FIFA','Logo Mundial 2026','Mascota Maple','Mascota Zayu','Mascota Clutch',
+    'Estadio MetLife','Estadio Azteca','Estadio BMO Field','Estadio SoFi','Estadio AT&T',
+    'Estadio Mercedes-Benz','Estadio Lincoln Financial','Estadio Hard Rock','Estadio Levi\'s',
+    'Estadio NRG','Estadio Arrowhead','Estadio Akron','Estadio BC Place','Pelota oficial','Equipo del torneo'
+  ];
+  SPECIAL_NAMES.forEach((name, i) => {
+    stickers.push({
+      id: `FWC-${i+1}`,
+      num: globalNum++,
+      code: 'FWC',
+      seleccion: 'Mundial',
+      seleccionName: 'Mundial 2026',
+      flag: '🏆',
+      group: 'Especiales',
+      name,
+      type: i === 0 ? 'trofeo' : (i < 5 ? 'mascota' : (i < 19 ? 'estadio' : 'especial')),
+      isSpecial: true,
+      orderInSet: i+1
+    });
+  });
+
+  // Selecciones
+  SELECCIONES.forEach(sel => {
+    // Escudo
+    stickers.push({
+      id: `${sel.code}-1`, num: globalNum++,
+      code: sel.code, seleccion: sel.code, seleccionName: sel.name, flag: sel.flag, group: sel.group,
+      name: 'Escudo', type: 'escudo', isSpecial: false, orderInSet: 1
+    });
+    // Foto grupal
+    stickers.push({
+      id: `${sel.code}-2`, num: globalNum++,
+      code: sel.code, seleccion: sel.code, seleccionName: sel.name, flag: sel.flag, group: sel.group,
+      name: 'Plantel', type: 'plantel', isSpecial: false, orderInSet: 2
+    });
+    // 18 jugadores
+    const players = PLAYERS_BY_CODE[sel.code] || Array.from({length:18}, (_,i) => `Jugador ${i+1}`);
+    for (let i = 0; i < 18; i++) {
+      stickers.push({
+        id: `${sel.code}-${i+3}`, num: globalNum++,
+        code: sel.code, seleccion: sel.code, seleccionName: sel.name, flag: sel.flag, group: sel.group,
+        name: players[i] || `Jugador ${i+1}`, type: 'jugador', isSpecial: false, orderInSet: i+3
+      });
+    }
+  });
+
+  return stickers;
+}
+
+const CATALOG = buildCatalog();
+console.log(`Catálogo armado: ${CATALOG.length} figuritas`);
+
+// ============================================================
+// ESTADO + PERSISTENCIA
+// ============================================================
+// counts[id] = cantidad total que tiene Robe.
+// Lógica híbrida: si counts >= 1, la primera es "pegada", el resto son "repetidas".
+
+const STORAGE_KEY = 'figus26_v0';
+let state = { counts: {}, lastEdits: [] }; // lastEdits para undo
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      state = { counts: parsed.counts || {}, lastEdits: [] };
+    }
+  } catch(e) { console.error('load error', e); }
+}
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ counts: state.counts }));
+  } catch(e) { console.error('save error', e); }
+}
+
+function getCount(id) { return state.counts[id] || 0; }
+function setCount(id, n) {
+  if (n <= 0) delete state.counts[id]; else state.counts[id] = n;
+  saveState();
+}
+
+// ============================================================
+// LÓGICA PRINCIPAL
+// ============================================================
+function adjustCount(id, delta) {
+  const before = getCount(id);
+  const after = Math.max(0, before + delta);
+  if (before === after) return { id, before, after, sticker: CATALOG.find(s=>s.id===id) };
+  state.lastEdits.push({ id, before });
+  if (state.lastEdits.length > 20) state.lastEdits.shift();
+  setCount(id, after);
+  return { id, before, after, sticker: CATALOG.find(s=>s.id===id) };
+}
+
+function undoLast() {
+  const last = state.lastEdits.pop();
+  if (!last) return null;
+  setCount(last.id, last.before);
+  return last;
+}
+
+// ============================================================
+// QUICK LOAD INPUT — el speedrun
+// ============================================================
+const qlInput = document.getElementById('ql-input');
+const qlSuggestions = document.getElementById('ql-suggestions');
+let activeSuggestion = -1;
+
+function parseInput(raw) {
+  // Acepta: "ARG 13", "ARG13", "arg 13", "ar 13" (si solo hay una match)
+  const t = raw.trim().toUpperCase();
+  if (!t) return [];
+  const m = t.match(/^([A-Z]{2,4})\s*(\d+)?$/);
+  if (!m) return [];
+  const codePart = m[1];
+  const numPart = m[2];
+
+  // Match selecciones que empiezan con codePart
+  const matchingCodes = [...new Set(CATALOG.map(s => s.code))].filter(c => c.startsWith(codePart));
+
+  if (numPart) {
+    const n = parseInt(numPart);
+    const results = [];
+    matchingCodes.forEach(c => {
+      const sticker = CATALOG.find(s => s.code === c && s.orderInSet === n);
+      if (sticker) results.push(sticker);
+    });
+    return results.slice(0, 8);
+  } else {
+    // Sin número: mostrar primeras de cada selección que matchea
+    return matchingCodes.flatMap(c =>
+      CATALOG.filter(s => s.code === c).slice(0, 4)
+    ).slice(0, 8);
+  }
+}
+
+function renderSuggestions(matches) {
+  if (!matches.length) { qlSuggestions.style.display = 'none'; return; }
+  qlSuggestions.innerHTML = matches.map((s, i) => {
+    const cnt = getCount(s.id);
+    const stateLabel = cnt === 0 ? 'falta' : (cnt === 1 ? 'pegada' : `+${cnt-1} repe`);
+    return `
+      <div class="ql-suggestion ${i===activeSuggestion?'active':''}" data-id="${s.id}" data-idx="${i}">
+        <span class="num">${s.code} ${s.orderInSet}</span>
+        <span class="name">${s.flag} ${s.name}</span>
+        <span class="state">${stateLabel}</span>
+      </div>
+    `;
+  }).join('');
+  qlSuggestions.style.display = 'block';
+  // click handlers
+  qlSuggestions.querySelectorAll('.ql-suggestion').forEach(el => {
+    el.addEventListener('click', () => {
+      const id = el.dataset.id;
+      const r = adjustCount(id, +1);
+      showToast(r);
+      qlInput.value = '';
+      qlInput.focus();
+      qlSuggestions.style.display = 'none';
+      activeSuggestion = -1;
+      renderAll({ touchedId: id });
+    });
+  });
+}
+
+qlInput.addEventListener('input', e => {
+  const matches = parseInput(e.target.value);
+  activeSuggestion = matches.length ? 0 : -1;
+  renderSuggestions(matches);
+});
+
+qlInput.addEventListener('keydown', e => {
+  const matches = parseInput(qlInput.value);
+
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    if (!matches.length) return;
+    const target = matches[Math.max(0, activeSuggestion)];
+    const delta = e.shiftKey ? -1 : +1;
+    const r = adjustCount(target.id, delta);
+    showToast(r);
+    // Smart cursor: dejar el código y limpiar el número, listo para próxima
+    const m = qlInput.value.trim().toUpperCase().match(/^([A-Z]{2,4})/);
+    qlInput.value = m ? m[1] + ' ' : '';
+    qlSuggestions.style.display = 'none';
+    activeSuggestion = -1;
+    renderAll({ touchedId: target.id });
+  } else if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    if (matches.length) {
+      activeSuggestion = (activeSuggestion + 1) % matches.length;
+      renderSuggestions(matches);
+    }
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (matches.length) {
+      activeSuggestion = (activeSuggestion - 1 + matches.length) % matches.length;
+      renderSuggestions(matches);
+    }
+  } else if (e.key === 'Escape') {
+    qlInput.value = '';
+    qlSuggestions.style.display = 'none';
+    activeSuggestion = -1;
+  }
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === '/' && document.activeElement !== qlInput) {
+    e.preventDefault();
+    qlInput.focus();
+  }
+});
+
+// ============================================================
+// TOAST
+// ============================================================
+const toast = document.getElementById('toast');
+let toastTimer;
+function showToast(r) {
+  const action = r.after > r.before
+    ? (r.after === 1 ? 'PEGADA' : `REPE +${r.after-1}`)
+    : (r.after === 0 ? 'BORRADA' : 'RESTADA');
+  toast.innerHTML = `
+    <span class="t-action">${action}</span>
+    <span class="t-num">${r.sticker.code} ${r.sticker.orderInSet}</span>
+    <span>${r.sticker.flag} ${r.sticker.name}</span>
+    <button class="undo" onclick="doUndo()">deshacer</button>
+  `;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
+}
+window.doUndo = function() {
+  const last = undoLast();
+  if (last) {
+    toast.classList.remove('show');
+    renderAll();
+  }
+};
+
+// ============================================================
+// VIEWS
+// ============================================================
+let currentView = 'album';
+let currentFilter = 'todas'; // grupo
+
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentView = tab.dataset.view;
+    renderAll();
+  });
+});
+
+function renderStats() {
+  const total = CATALOG.length;
+  let have = 0, dupes = 0;
+  CATALOG.forEach(s => {
+    const c = getCount(s.id);
+    if (c >= 1) have++;
+    if (c >= 2) dupes += (c - 1);
+  });
+  document.getElementById('stat-have').innerHTML = have + `<span class="pct">${Math.round(have/total*100)}%</span>`;
+  document.getElementById('stat-dupes').textContent = dupes;
+  document.getElementById('stat-missing').textContent = total - have;
+  document.getElementById('tab-repes-count').textContent = dupes;
+  document.getElementById('tab-faltan-count').textContent = total - have;
+}
+
+function renderFilters() {
+  const groups = ['todas', ...new Set(CATALOG.map(s => s.group))];
+  const filtersEl = document.getElementById('filters');
+  // En mobile + vista album, los filtros se ocultan (la ruedita es el navegador)
+  filtersEl.className = 'filters' + (currentView === 'album' ? ' hide-on-mobile-album' : '');
+  filtersEl.innerHTML = `
+    <span class="filter-label">Filtrar:</span>
+    ${groups.map(g => `<div class="chip ${g===currentFilter?'active':''}" data-g="${g}">${g}</div>`).join('')}
+  `;
+  filtersEl.querySelectorAll('.chip').forEach(c => {
+    c.addEventListener('click', () => {
+      currentFilter = c.dataset.g;
+      renderAll();
+    });
+  });
+}
+
+function renderAlbumView() {
+  const grouped = {};
+  CATALOG.forEach(s => {
+    if (currentFilter !== 'todas' && s.group !== currentFilter) return;
+    const key = s.seleccion;
+    if (!grouped[key]) grouped[key] = { sticker: s, items: [] };
+    grouped[key].items.push(s);
+  });
+
+  const groups = Object.values(grouped);
+
+  // ----- VISTA DESKTOP (grilla de cards) -----
+  const desktopHtml = `<div class="selecciones desktop-album hidden-mobile">${
+    groups.map(({ sticker: head, items }) => {
+      const have = items.filter(s => getCount(s.id) >= 1).length;
+      const pct = Math.round(have / items.length * 100);
+      return `
+        <div class="seleccion">
+          <div class="seleccion-head">
+            <span class="flag">${head.flag}</span>
+            <span class="seleccion-name">${head.seleccionName}</span>
+            <span class="seleccion-code">${head.code}</span>
+          </div>
+          <div class="seleccion-progress"><div class="seleccion-bar" style="width:${pct}%"></div></div>
+          <div class="figus-grid">
+            ${items.map(s => {
+              const c = getCount(s.id);
+              const cls = c === 0 ? '' : (c === 1 ? 'have' : 'dupe');
+              return `
+                <div class="figu ${cls} ${s.isSpecial?'special':''}" data-id="${s.id}" title="${s.name}">
+                  <div class="figu-num">${s.code} ${s.orderInSet}</div>
+                  <div class="figu-name">${s.name}</div>
+                  ${c >= 2 ? `<div class="dupe-count">×${c}</div>` : ''}
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+    }).join('')
+  }</div>`;
+
+  // ----- VISTA MOBILE (swipe horizontal + ruedita) -----
+  const firstGroup = groups[0];
+  const firstHave = firstGroup ? firstGroup.items.filter(s => getCount(s.id) >= 1).length : 0;
+  const firstTotal = firstGroup ? firstGroup.items.length : 0;
+  const firstPct = firstTotal ? Math.round(firstHave / firstTotal * 100) : 0;
+
+  const mobileHtml = `
+    <div class="mobile-album active">
+      <div class="ma-progress-bar">
+        <span class="ma-flag" id="ma-flag">${firstGroup ? firstGroup.sticker.flag : ''}</span>
+        <div class="ma-meta">
+          <div class="ma-meta-line1">
+            <span class="ma-name" id="ma-name">${firstGroup ? firstGroup.sticker.seleccionName : ''}</span>
+            <span class="ma-code" id="ma-code">${firstGroup ? firstGroup.sticker.code : ''}</span>
+          </div>
+          <div class="ma-bar-track">
+            <div class="ma-bar-fill" id="ma-bar-fill" style="width:${firstPct}%"></div>
+          </div>
+        </div>
+        <div class="ma-counter" id="ma-counter">${firstHave}/${firstTotal}</div>
+      </div>
+
+      <div class="ma-pages" id="ma-pages">
+        ${groups.map((g, idx) => `
+          <div class="ma-page" data-page-idx="${idx}" data-code="${g.sticker.code}">
+            <div class="ma-figus">
+              ${g.items.map(s => {
+                const c = getCount(s.id);
+                const cls = c === 0 ? '' : (c === 1 ? 'have' : 'dupe');
+                return `
+                  <div class="ma-figu ${cls} ${s.isSpecial?'special':''}" data-id="${s.id}">
+                    <div class="ma-figu-num">${s.code} ${s.orderInSet}</div>
+                    <div class="ma-figu-name">${s.name}</div>
+                    ${c >= 2 ? `<div class="ma-dupe-count">×${c}</div>` : ''}
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      <div class="ma-wheel-wrap">
+        <div class="ma-wheel-indicator"></div>
+        <div class="ma-wheel" id="ma-wheel">
+          ${groups.map((g, idx) => `
+            <div class="ma-wheel-item ${idx===0?'active':''}" data-idx="${idx}">
+              <span class="ma-wheel-code">${g.sticker.code}</span>
+              <span class="ma-wheel-page">P.${idx+1}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('content-area').innerHTML = mobileHtml + desktopHtml;
+
+  // ----- handlers vista desktop -----
+  document.querySelectorAll('.figu').forEach(el => {
+    el.addEventListener('click', () => {
+      const r = adjustCount(el.dataset.id, +1);
+      showToast(r);
+      renderAll();
+    });
+    el.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      const r = adjustCount(el.dataset.id, -1);
+      showToast(r);
+      renderAll();
+    });
+  });
+
+  // ----- handlers vista mobile -----
+  document.querySelectorAll('.ma-figu').forEach(el => {
+    el.addEventListener('click', () => {
+      const r = adjustCount(el.dataset.id, +1);
+      showToast(r);
+      // Optimistic update solo del tile y los stats, sin re-render completo
+      // (re-render completo perdería la posición de scroll de las páginas)
+      updateMobileFigu(el, r.after);
+      renderStats();
+      updateMobileProgressBar();
+    });
+    el.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      const r = adjustCount(el.dataset.id, -1);
+      showToast(r);
+      updateMobileFigu(el, r.after);
+      renderStats();
+      updateMobileProgressBar();
+    });
+  });
+
+  // ----- sincronización páginas <-> ruedita -----
+  setupMobileAlbumSync(groups);
+}
+
+function updateMobileFigu(el, count) {
+  el.classList.remove('have', 'dupe');
+  if (count === 1) el.classList.add('have');
+  else if (count >= 2) el.classList.add('dupe');
+  // actualizar el contador de repes
+  const existingDupe = el.querySelector('.ma-dupe-count');
+  if (count >= 2) {
+    if (existingDupe) existingDupe.textContent = `×${count}`;
+    else {
+      const div = document.createElement('div');
+      div.className = 'ma-dupe-count';
+      div.textContent = `×${count}`;
+      el.appendChild(div);
+    }
+  } else if (existingDupe) {
+    existingDupe.remove();
+  }
+}
+
+function updateMobileProgressBar() {
+  // recalcula el progreso de la página actualmente visible
+  const pages = document.getElementById('ma-pages');
+  if (!pages) return;
+  const idx = Math.round(pages.scrollLeft / pages.clientWidth);
+  const pageEl = pages.children[idx];
+  if (!pageEl) return;
+  const code = pageEl.dataset.code;
+  const items = CATALOG.filter(s => s.code === code);
+  const have = items.filter(s => getCount(s.id) >= 1).length;
+  const pct = Math.round(have / items.length * 100);
+  const fill = document.getElementById('ma-bar-fill');
+  const counter = document.getElementById('ma-counter');
+  if (fill) fill.style.width = pct + '%';
+  if (counter) counter.textContent = `${have}/${items.length}`;
+}
+
+function setupMobileAlbumSync(groups) {
+  const pages = document.getElementById('ma-pages');
+  const wheel = document.getElementById('ma-wheel');
+  if (!pages || !wheel) return;
+
+  let currentIdx = 0;
+  let syncSource = null; // 'pages' | 'wheel' | null — para evitar feedback loop
+
+  const wheelItems = [...wheel.querySelectorAll('.ma-wheel-item')];
+
+  function setActive(idx, source) {
+    if (idx < 0 || idx >= groups.length) return;
+    if (idx === currentIdx) return;
+    currentIdx = idx;
+
+    // actualizar barra de progreso superior
+    const g = groups[idx];
+    const have = g.items.filter(s => getCount(s.id) >= 1).length;
+    const pct = Math.round(have / g.items.length * 100);
+    document.getElementById('ma-flag').textContent = g.sticker.flag;
+    document.getElementById('ma-name').textContent = g.sticker.seleccionName;
+    document.getElementById('ma-code').textContent = g.sticker.code;
+    document.getElementById('ma-bar-fill').style.width = pct + '%';
+    document.getElementById('ma-counter').textContent = `${have}/${g.items.length}`;
+
+    // actualizar clases active/near de la ruedita
+    wheelItems.forEach((el, i) => {
+      el.classList.toggle('active', i === idx);
+      el.classList.toggle('near', Math.abs(i - idx) === 1);
+    });
+
+    // sincronizar la otra dirección (sin re-disparar)
+    if (source !== 'wheel') {
+      syncSource = 'pages';
+      const target = wheelItems[idx];
+      if (target) {
+        const wheelRect = wheel.getBoundingClientRect();
+        const itemRect = target.getBoundingClientRect();
+        wheel.scrollTo({
+          left: wheel.scrollLeft + itemRect.left - wheelRect.left - wheelRect.width/2 + itemRect.width/2,
+          behavior: 'smooth'
+        });
+      }
+      setTimeout(() => syncSource = null, 400);
+    }
+    if (source !== 'pages') {
+      syncSource = 'wheel';
+      pages.scrollTo({ left: pages.clientWidth * idx, behavior: 'smooth' });
+      setTimeout(() => syncSource = null, 400);
+    }
+  }
+
+  // Escuchar scroll de páginas (cuando el user swipea)
+  let pagesScrollTimeout;
+  pages.addEventListener('scroll', () => {
+    if (syncSource === 'wheel') return; // viene del programatic scroll, no responder
+    clearTimeout(pagesScrollTimeout);
+    pagesScrollTimeout = setTimeout(() => {
+      const idx = Math.round(pages.scrollLeft / pages.clientWidth);
+      setActive(idx, 'pages');
+    }, 80);
+  });
+
+  // Escuchar scroll de ruedita (cuando el user la arrastra)
+  let wheelScrollTimeout;
+  wheel.addEventListener('scroll', () => {
+    if (syncSource === 'pages') return;
+    clearTimeout(wheelScrollTimeout);
+    wheelScrollTimeout = setTimeout(() => {
+      // detectar qué item está más cerca del centro de la ruedita
+      const wheelCenter = wheel.scrollLeft + wheel.clientWidth / 2;
+      let closest = 0, closestDist = Infinity;
+      wheelItems.forEach((el, i) => {
+        const elCenter = el.offsetLeft + el.offsetWidth / 2;
+        const dist = Math.abs(elCenter - wheelCenter);
+        if (dist < closestDist) { closestDist = dist; closest = i; }
+      });
+      setActive(closest, 'wheel');
+    }, 100);
+  });
+
+  // Tap en un item de la ruedita
+  wheelItems.forEach((el, i) => {
+    el.addEventListener('click', () => setActive(i, 'click'));
+  });
+
+  // Posicionar la ruedita en el primer item al inicio (ruedita está padded en 50vw)
+  // wheelItems[0] necesita estar centrado al cargar
+  requestAnimationFrame(() => {
+    const target = wheelItems[0];
+    if (target) {
+      const wheelRect = wheel.getBoundingClientRect();
+      const itemRect = target.getBoundingClientRect();
+      wheel.scrollLeft = wheel.scrollLeft + itemRect.left - wheelRect.left - wheelRect.width/2 + itemRect.width/2;
+    }
+  });
+}
+
+function renderListView(predicate, emptyMsg) {
+  const items = CATALOG.filter(s => {
+    if (currentFilter !== 'todas' && s.group !== currentFilter) return false;
+    return predicate(s);
+  });
+
+  if (!items.length) {
+    document.getElementById('content-area').innerHTML = `
+      <div style="padding:40px;text-align:center;color:var(--ink-soft);font-family:'DM Mono',monospace">
+        ${emptyMsg}
+      </div>
+    `;
+    return;
+  }
+
+  // Si estamos viendo "Mis Repes", mostramos el excedente (count - 1) en vez del total.
+  // Si tenés 2 figuritas iguales, una está pegada y "te sobra 1" — esa es la repetida real.
+  const isRepesView = currentView === 'repes';
+
+  const html = `
+    <div class="list-view">
+      <div class="list-row header">
+        <div>Cód</div>
+        <div>Nombre</div>
+        <div class="seleccion-col">Selección</div>
+        <div>${isRepesView ? 'Repetidas' : 'Cantidad'}</div>
+      </div>
+      ${items.map(s => {
+        const c = getCount(s.id);
+        const displayCount = isRepesView ? Math.max(0, c - 1) : c;
+        return `
+          <div class="list-row">
+            <div class="num">${s.code} ${s.orderInSet}</div>
+            <div class="name">${s.flag} ${s.name}</div>
+            <div class="seleccion-col">${s.seleccionName}</div>
+            <div class="list-controls">
+              <button class="ctrl-btn" data-action="dec" data-id="${s.id}">−</button>
+              <span class="ctrl-count">${displayCount}</span>
+              <button class="ctrl-btn" data-action="inc" data-id="${s.id}">+</button>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+  document.getElementById('content-area').innerHTML = html;
+  document.querySelectorAll('.ctrl-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      const delta = b.dataset.action === 'inc' ? +1 : -1;
+      const r = adjustCount(b.dataset.id, delta);
+      showToast(r);
+      renderAll();
+    });
+  });
+}
+
+function renderAll(opts = {}) {
+  renderStats();
+  renderFilters();
+  if (currentView === 'album') {
+    // Si vamos a re-renderizar el album view pero estamos en mobile y solo cambió
+    // un sticker visible, hacemos update optimista para no perder scroll de las páginas.
+    if (opts.touchedId && document.querySelector('.mobile-album.active')) {
+      const figuEl = document.querySelector(`.ma-figu[data-id="${opts.touchedId}"]`);
+      if (figuEl) {
+        updateMobileFigu(figuEl, getCount(opts.touchedId));
+        // también actualizar el desktop (oculto) por si rotan el celu o cambia el viewport
+        const desktopFigu = document.querySelector(`.figu[data-id="${opts.touchedId}"]`);
+        if (desktopFigu) updateDesktopFigu(desktopFigu, getCount(opts.touchedId));
+        updateMobileProgressBar();
+        return;
+      }
+    }
+    renderAlbumView();
+  } else if (currentView === 'repes') {
+    renderListView(s => getCount(s.id) >= 2, 'Todavía no tenés repetidas. Cargá tus sobres con el buscador de arriba ↑');
+  } else if (currentView === 'faltan') {
+    renderListView(s => getCount(s.id) === 0, '¡Completaste el álbum! 🏆 (¿en serio?)');
+  }
+}
+
+function updateDesktopFigu(el, count) {
+  el.classList.remove('have', 'dupe');
+  if (count === 1) el.classList.add('have');
+  else if (count >= 2) el.classList.add('dupe');
+  const existing = el.querySelector('.dupe-count');
+  if (count >= 2) {
+    if (existing) existing.textContent = `×${count}`;
+    else {
+      const div = document.createElement('div');
+      div.className = 'dupe-count';
+      div.textContent = `×${count}`;
+      el.appendChild(div);
+    }
+  } else if (existing) {
+    existing.remove();
+  }
+  // Actualizar la barra de la card que contiene este figu
+  const card = el.closest('.seleccion');
+  if (card) {
+    const allFigus = card.querySelectorAll('.figu');
+    const have = [...allFigus].filter(f => f.classList.contains('have') || f.classList.contains('dupe')).length;
+    const pct = Math.round(have / allFigus.length * 100);
+    const bar = card.querySelector('.seleccion-bar');
+    if (bar) bar.style.width = pct + '%';
+  }
+}
+
+loadState();
+renderAll();
+qlInput.focus();
+</script>
+
+</body>
+</html>
