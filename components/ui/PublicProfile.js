@@ -20,6 +20,7 @@ export function PublicProfile({ profile, counts, stats, repes, faltan, matchUser
         background: 'var(--paper-dark)',
         border: '2px solid var(--ink)',
         boxShadow: '4px 4px 0 var(--ink)',
+        flexWrap: wrap,
       }}>
         <div style={{ fontSize: 48, lineHeight: 1 }}>{profile.avatar_emoji || '⚽'}</div>
         <div style={{ flex: 1 }}>
