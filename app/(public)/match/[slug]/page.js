@@ -58,16 +58,14 @@ export default async function MatchPage({ params }) {
   const countsA = buildCounts(profileA.id)
   const countsB = buildCounts(profileB.id)
 
-  // Calcular matches
-  const yoDoy = [] // A tiene repe, B no tiene
-  const elDa = []  // B tiene repe, A no tiene
+  // Repes de cada usuario (count >= 2)
+  const repesA = CATALOG
+    .filter((s) => (countsA[s.id] || 0) >= 2)
+    .map((s) => ({ sticker: s, count: countsA[s.id] }))
 
-  CATALOG.forEach((s) => {
-    const cA = countsA[s.id] || 0
-    const cB = countsB[s.id] || 0
-    if (cA >= 2 && cB === 0) yoDoy.push({ sticker: s, count: cA - 1 })
-    if (cB >= 2 && cA === 0) elDa.push({ sticker: s, count: cB - 1 })
-  })
+  const repesB = CATALOG
+    .filter((s) => (countsB[s.id] || 0) >= 2)
+    .map((s) => ({ sticker: s, count: countsB[s.id] }))
 
   return (
     <>
@@ -75,8 +73,8 @@ export default async function MatchPage({ params }) {
       <MatchView
         profileA={profileA}
         profileB={profileB}
-        yoDoy={yoDoy}
-        elDa={elDa}
+        repesA={repesA}
+        repesB={repesB}
       />
     </>
   )

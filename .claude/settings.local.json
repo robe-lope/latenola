@@ -22,7 +22,9 @@
       "Bash(node *)",
       "Bash(cmd.exe /c \"taskkill /F /IM node.exe\")",
       "Bash(curl -si http://localhost:3000/login)",
-      "Bash(curl -si http://localhost:3000/album)"
+      "Bash(curl -si http://localhost:3000/album)",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\EZEQUIEL\\\\Documents\\\\dev\\\\latenola\\\\app\\\\\\(app\\)\" -Directory | ForEach-Object { $_.Name }; Write-Host \"---\"; Get-ChildItem \"C:\\\\Users\\\\EZEQUIEL\\\\Documents\\\\dev\\\\latenola\\\\app\\\\\\(app\\)\\\\perfil\" -File 2>$null | ForEach-Object { $_.Name }; Get-ChildItem \"C:\\\\Users\\\\EZEQUIEL\\\\Documents\\\\dev\\\\latenola\\\\app\\\\\\(app\\)\\\\repes\" -File 2>$null | ForEach-Object { $_.Name }; Get-ChildItem \"C:\\\\Users\\\\EZEQUIEL\\\\Documents\\\\dev\\\\latenola\\\\app\\\\\\(app\\)\\\\faltan\" -File 2>$null | ForEach-Object { $_.Name })",
+      "Bash(npx next *)"
     ]
   }
 }
