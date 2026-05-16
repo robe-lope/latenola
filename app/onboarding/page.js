@@ -49,6 +49,7 @@ export default function OnboardingPage() {
         username: cleaned,
         display_name: cleaned,
         whatsapp: whatsapp.trim() || null,
+        is_public: true,
       })
 
     if (error) {
